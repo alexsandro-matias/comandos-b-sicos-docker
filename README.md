@@ -153,3 +153,28 @@ docker run  --name php-A -d -p 8080:80 --volume=/data/php-A:/var/www/html php:7.
 phpinfo();
 ?>
 ~~~
+
+
+# limitando memória RAM e CPU dos conteiners
+
+docker stats php-A
+
+docker update php-A -m 128M --cpus 0.2
+
+docker run --name ubuntu-C -dti -m 128M --cpus 0.2 ubuntu
+
+## Instalando programa no Ubuntu para simular o Stress dos recursos da máquina
+apt update && apt install stress
+stress --cpu 1 --vm-bytes 50m --vm 1 --vm-bytes 50m
+
+
+# Configurando Redes no Conteiner
+apt-get install iputils-ping
+docker network create minha-rede
+docker run -dit --name Ubuntu-B --network minha-rede  ubuntu
+
+
+
+
+
+
