@@ -174,6 +174,150 @@ docker network create minha-rede
 docker run -dit --name Ubuntu-B --network minha-rede  ubuntu
 
 
+# Criando um Dockerfile
+
+docker run -dti --name ubuntu-python ubuntu
+docker exec -ti ubuntu-python bash
+
+
+apt install python3 nano && apt clean
+
+
+	<!-- nome = input("Qual é o seu nome? ")
+	print (nome) -->
+
+
+
+nano dockerfile
+
+FROM ubuntu
+
+RUN apt update && apt install -y python3 && apt clean
+
+COPY app.py /opt/app.py
+
+CMD python3 /opt/app.py
+
+docker build . -t python-ubuntu
+
+
+
+# Criando uma imagem personalizada do Apache
+
+wget http://site1368633667.hospedagemdesites.ws/site1.zip
+
+Dockerfile
+==================
+
+FROM debian
+
+RUN apt-get update && apt-get install -y apache2 && apt-get clean
+
+ADD site.tar /var/www/html
+
+LABEL description="Apache Webserver 1.0"
+
+VOLUME /var/www/html/
+
+EXPOSE 80
+
+
+ENTRYPOINT ["/usr/sbin/apachectl"]
+
+CMD ["-D", "FOREGROUND"]
+
+
+docker image build -t debian-apache:1.0 .
+
+docker run  -dti -p 80:80 --name meu-apache debian-apache:1.0
+
+
+# Criando imagens a partir de uma linguagem de programação
+nome = input("Qual é o seu nome? ")
+	print (nome)
+
+
+FROM python
+
+WORKDIR /usr/src/app
+
+COPY app.py /usr/src/app
+
+CMD [ "python", "./app.py" ]
+
+
+# Criando imagens MultiStage
+docker pull golang
+docker pull alpine
+
+
+package main
+import (
+    "fmt"
+)
+
+func main() {
+  fmt.Println("Qual é o seu nome:? ")
+  var name string
+  fmt.Scanln(&name)
+  fmt.Printf("Oi, %s! Eu sou a linguagem Go! ", name)
+}
+
+
+FROM golang as exec
+
+COPY app.go /go/src/app/
+
+ENV GO111MODULE=auto
+
+WORKDIR /go/src/app
+
+RUN go build -o app.go .
+
+FROM alpine
+
+WORKDIR /appexec
+COPY --from=exec /go/src/app/ /appexec
+RUN chmod -R 755 /appexec
+ENTRYPOINT ./app.go
+
+
+docker image build -t app-go:1.0 .
+docker run -ti  app-go:1.0
+
+
+# Enviando a imagem para o DockerHub
+docker login
+
+docker build . -t nome-de-usuário/my-go=app:1.0
+
+docker push nome-deu-usuário/my-go=app:1.0
+
+
+# Criando um servidor de imagens
+docker run -d -p 5000:5000 --restart=always --name registry registry:2
+
+docker logout
+
+docker image tag [id] localhost:5000/meu-apache:1.0
+
+
+curl localhost:5000/v2/_catalog
+
+
+docker push  localhost:5000/my-go-app:1.0
+
+
+nano /etc/docker/daemon.json 
+
+	{ "insecure-registries":["10.0.0.189:5000"] }
+	
+
+systemctl restart docker
+
+docker push  localhost:5000/my-go-app:1.0
+
+
 
 # Referências
 
